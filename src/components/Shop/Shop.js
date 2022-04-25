@@ -12,30 +12,43 @@ import { Link } from 'react-router-dom';
 const Shop = () => {
     const [products, setProducts] = useProducts()
     const [cart, setCart] = useCart(products)
+    const [pageCount,setPageCount] = useState(0) 
+
+
+    useEffect(() => {
+        fetch('http://localhost:5000/productCount')
+        .then(res => res.json())
+        .then(apa => {
+            console.log(apa.count);
+            const count = apa.count 
+            const pages = Math.ceil(count / 10) 
+            setPageCount(pages)
+        })
+    },[])
 
     //handle cart 
     const handleAddToCart = selectedProduct => {
         let newCart = []
-        const exists = cart.find(product => product.id === selectedProduct.id)
+        const exists = cart.find(product => product._id === selectedProduct._id)
         if (!exists) {
             selectedProduct.quantity = 1
             newCart = [...cart, selectedProduct]
         }
         else {
-            const rest = cart.filter(product => product.id !== selectedProduct.id)
+            const rest = cart.filter(product => product._id !== selectedProduct._id)
             //lal jama porake khuje niye aste bolce oke bar kori baki gulan ace rest er vitor 
             exists.quantity = exists.quantity + 1;
             newCart = [...rest, exists]
         }
         setCart(newCart)
-        addToDb(selectedProduct.id)
+        addToDb(selectedProduct._id)
     }
     const remove = () => {
         let newCart = []
         setCart(newCart)
     }
     const deleteAll = (product) => {
-        deleteShoppingCart(product.id)
+        deleteShoppingCart(product._id)
     }
 
 
@@ -46,10 +59,16 @@ const Shop = () => {
                     <div className="row container mt-5 ">
                         {
                             products.map(product => <Product
-                                key={product.id}
+                                key={product._id}
                                 product={product}
                                 handleAddToCart={handleAddToCart}
                             ></Product>)
+                        }
+                    </div>
+                    <div className='container mb-5 pagination-container'>
+                        {
+                            [...Array(pageCount).keys()]
+                            .map(number => <button> {number +1 } </button> )
                         }
                     </div>
                 </div>

@@ -32,6 +32,19 @@
   margin-left: 8px;
 }
 
+/* pagination  */ 
+.pagination-container button {
+  background-color: #fff;
+  border: 1px solid orange;
+  margin-right: 15px;
+}
+
+.pagination-container button:hover, .selected {
+  background-color: orange;
+  color: #fff;
+}
+
+
 @media only screen and (max-width: 692px) {
   .shop-container {
     display: flex;
