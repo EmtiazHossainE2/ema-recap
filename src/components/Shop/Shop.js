@@ -12,19 +12,30 @@ import { Link } from 'react-router-dom';
 const Shop = () => {
     const [products, setProducts] = useProducts()
     const [cart, setCart] = useCart(products)
-    const [pageCount,setPageCount] = useState(0) 
+    const [pageCount, setPageCount] = useState(0)
+    const [page, setPage] = useState(0)
+    const [pageProduct , setPageProduct ] = useState(10)
+
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/product?page=${page}&pageProduct=${pageProduct}`)
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    },[page,pageProduct])
 
 
     useEffect(() => {
         fetch('http://localhost:5000/productCount')
-        .then(res => res.json())
-        .then(apa => {
-            console.log(apa.count);
-            const count = apa.count 
-            const pages = Math.ceil(count / 10) 
-            setPageCount(pages)
-        })
-    },[])
+            .then(res => res.json())
+            .then(apa => {
+                console.log(apa.count);
+                const count = apa.count
+                const pages = Math.ceil(count / 10)
+                setPageCount(pages)
+            })
+    }, [])
+
+    
 
     //handle cart 
     const handleAddToCart = selectedProduct => {
@@ -68,9 +79,19 @@ const Shop = () => {
                     <div className='container mb-5 pagination-container'>
                         {
                             [...Array(pageCount).keys()]
-                            .map(number => <button> {number +1 } </button> )
+                                .map(number =>
+                                    <button className={page === number ? 'selected' : ''}
+                                    onClick={() => setPage(number)}
+                                    > {number + 1} </button>)
                         }
+                        <select name="" id="" onChange={e => setPageProduct(e.target.value)}>
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
                     </div>
+                    
                 </div>
 
                 <div className="col-lg-2 col-md-3 cart-container">

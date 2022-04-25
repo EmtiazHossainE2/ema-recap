@@ -39,7 +39,7 @@
   margin-right: 15px;
 }
 
-.pagination-container button:hover, .selected {
+.pagination-container button:hover , .pagination-container .selected {
   background-color: orange;
   color: #fff;
 }
